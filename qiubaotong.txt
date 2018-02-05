@@ -1,0 +1,103 @@
+1. orderStatus == 3
+<result column="j_addr_type" property="jAddrType" />
+		<result column="j_addr_id" property="jAddrId" />
+		<result column="j_addr_name" property="jAddrName" />
+			<result column="d_addr_type" property="dAddrType" />
+		<result column="d_addr_id" property="dAddrId" />
+		<result column="d_addr_name" property="dAddrName" />
+
+2. http://qbt.missionsky.cn:6047/qbt-server/bill/
+
+
+status 1= jinyong
+		2=qiyong 
+		
+		
+		
+		
+		
+		
+INSERT into province (
+	province_id,
+name,
+course_amount,
+status,
+sort_number,
+create_time
+)
+select a.id as province_id ,a.`name` as name,count(*) as course_amount, 1 as status,0 as sort_number,SYSDATE() as create_time
+from 
+(
+select 	 	bsa.tree_id, substring_index(bsa.tree_id,',',1) id, 
+					substring_index(bc.tree_path,',',1) name
+		 from base_course bc
+left join base_sf_area bsa
+			on 	bc.area_id = bsa.id
+)a 
+GROUP BY  a.id
+
+
+
+INSERT into city (
+	city_id,
+name,
+course_amount,
+status,
+sort_number,
+create_time
+)
+select a.city_id city_id ,a.`name` as name,count(*) as course_amount, 1 as status,0 as sort_number,SYSDATE() as create_time
+from 
+(
+select 	 	bsa.tree_id, substring_index(substring_index(bsa.tree_id,',',2),',',-1) city_id, 
+					substring_index(substring_index(bc.tree_path,',',2),',',-1) name
+		 from base_course bc
+left join base_sf_area bsa
+			on 	bc.area_id = bsa.id
+)a 
+GROUP BY  a.city_id
+
+
+
+
+
+
+
+select a.id city_id ,a.`name` as name,count(*) as course_amount, city.status,city.sort_number
+from 
+(
+select 	bsa.tree_id, substring_index(substring_index(bsa.tree_id,',',2),',',-1) id, 
+		substring_index(substring_index(bc.tree_path,',',2),',',-1) name
+		from base_course bc
+left join base_sf_area bsa
+			on 	bc.area_id = bsa.id
+)a 
+left join 	city 
+		on  city.city_id = a.id
+GROUP BY  	a.id
+
+
+
+
+
+
+
+
+select a.id as province_id ,a.`name` as name,count(*) as course_amount,province.status,province.sort_number
+from 
+(
+select 	 	bsa.tree_id, substring_index(bsa.tree_id,',',1) id, 
+			substring_index(bc.tree_path,',',1) name
+			from base_course bc
+left join 	base_sf_area bsa
+		on 	bc.area_id = bsa.id
+
+)a 
+left join 	province 
+		on  province.province_id = a.id
+
+GROUP BY  	a.id
+
+
+13421398313
+111111
